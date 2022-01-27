@@ -180,19 +180,17 @@ class CitySearch extends SearchDelegate {
                 style: TextStyle(fontSize: 36),
               ),
               Text(
-                '${weather.degrees}',
+                '${weather.degrees} ℃',
                 style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
               ),
             ],
           ),
           SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(weather!.icon),
-              SizedBox(width: 12),
-              Text(weather.description),
-            ],
+          Icon(weather!.icon, size: 56),
+          SizedBox(height: 18),
+          Text(
+            weather.description,
+            style: TextStyle(color: Colors.grey),
           ),
         ],
       ),
