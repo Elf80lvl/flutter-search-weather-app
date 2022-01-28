@@ -91,6 +91,8 @@ class CitySearch extends SearchDelegate<String> {
   //*what to show as a result
   @override
   Widget buildResults(BuildContext context) {
+    //* add the last entered city in the list of recent cities
+    recentCities.insert(0, query);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -44,6 +44,8 @@ class _NetworkSearchScreenState extends State<NetworkSearchScreen> {
 }
 
 class CitySearch extends SearchDelegate {
+  final recentCities = [];
+
   //*what to build to the right side of the search bar (close (clear) button in this case which clears the serarch fiels or closes the search if it's empty)
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -79,6 +81,9 @@ class CitySearch extends SearchDelegate {
   //*what to show as a result
   @override
   Widget buildResults(BuildContext context) {
+    recentCities.insert(0, query);
+    print('inserted: $query');
+    print(recentCities);
     return FutureBuilder<Weather>(
         future: WeatherApi.getWeather(city: query),
         builder: (context, snapshot) {
@@ -103,16 +108,12 @@ class CitySearch extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) => FutureBuilder<List<String>>(
       future: WeatherApi.searchCities(query: query),
       builder: (context, snapshot) {
-        //* if there is no text in the search field show widget that says that
-        if (query.isEmpty) {
-          return buildNoSuggestions();
-        }
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           default:
             if (snapshot.hasError || snapshot.data!.isEmpty) {
-              return buildNoSuggestions();
+              return ShowRecentCities(recentCities: recentCities);
             }
             //*snapshot.data - List of Strings of suggestions
             return buildSuggestionsSuccess(snapshot.data!);
@@ -186,13 +187,35 @@ class CitySearch extends SearchDelegate {
             ],
           ),
           SizedBox(height: 12),
-          Icon(weather!.icon, size: 56),
+          Icon(weather.icon, size: 56),
           SizedBox(height: 18),
           Text(
             weather.description,
             style: TextStyle(color: Colors.grey),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ShowRecentCities extends StatelessWidget {
+  const ShowRecentCities({
+    Key? key,
+    required this.recentCities,
+  }) : super(key: key);
+
+  final List recentCities;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: recentCities.length,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(
+          recentCities[index],
+          style: TextStyle(color: Colors.grey),
+        ),
       ),
     );
   }
