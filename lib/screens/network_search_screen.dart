@@ -81,9 +81,10 @@ class CitySearch extends SearchDelegate {
   //*what to show as a result
   @override
   Widget buildResults(BuildContext context) {
-    recentCities.insert(0, query);
-    print('inserted: $query');
-    print(recentCities);
+    if (!recentCities.contains(query)) {
+      recentCities.insert(0, query);
+    }
+
     return FutureBuilder<Weather>(
         future: WeatherApi.getWeather(city: query),
         builder: (context, snapshot) {
@@ -188,7 +189,7 @@ class CitySearch extends SearchDelegate {
           ),
           SizedBox(height: 12),
           Icon(weather.icon, size: 56),
-          SizedBox(height: 18),
+          SizedBox(height: 28),
           Text(
             weather.description,
             style: TextStyle(color: Colors.grey),
